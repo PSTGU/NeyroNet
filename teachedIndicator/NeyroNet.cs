@@ -12,6 +12,7 @@ namespace teachedIndicator
         private double[] inputs, middle, outputs;
         //private Neyron[] workLoyer, outLoyer;
         private Layer workLoyer, outLoyer;
+        private Matrix workLoyerCoeffs, outLoyerCoeffs;
 
         public NeyroNet(int ins, int outs, int size)
         {
@@ -27,7 +28,10 @@ namespace teachedIndicator
             //outLoyer = new Neyron[outs];
             workLoyer = new Layer(Size, NumOfInputs);
             outLoyer = new Layer(NumOfOutputs, Size);
-            
+
+            workLoyerCoeffs = new Matrix("wl.txt");
+            outLoyerCoeffs = new Matrix("ol.txt");
+
             //for (int outNeyronNum = 0; outNeyronNum < outLoyer.Length; outNeyronNum++)
             //{
             //    outLoyer[outNeyronNum] = new Neyron(size, outNeyronNum, r);
@@ -43,16 +47,23 @@ namespace teachedIndicator
             middle = workLoyer.Exe(inputs);
             outputs = outLoyer.Exe(middle);
             return outputs;            
-            //inputs = question;
-            //for (int i = 0; i < Size; i++)
-            //{
-            //    middle[i] = workLoyer[i].Execute(inputs);
-            //}
-            //for (int i = 0; i < NumOfOutputs; i++)
-            //{
-            //    outputs[i] = outLoyer[i].Execute(middle);
-            //}
-            //return outputs;
+            
+        }
+        public double[] QuickExe(double[] question)
+        {
+            Matrix workMatr = new Matrix(question);
+            Matrix inter = workLoyerCoeffs.MatrixMultuplyParallel(workMatr);
+            for (int i = 0; i < inter.Column; i++)
+            {
+                inter.Table[0][i] = 1 / (1 + Math.Exp(-inter.Table[0][i]));
+            }
+            workMatr = new Matrix(inter.Table[0]);
+            inter = outLoyerCoeffs.MatrixMultuplyParallel(workMatr);
+            for (int i = 0; i < inter.Column; i++)
+            {
+                inter.Table[0][i] = 1 / (1 + Math.Exp(-inter.Table[0][i]));
+            }
+            return inter.Table[0];
         }
         public void Study(string examplesAddress, string correctAnswersAddress, double step, long iter)
         {
@@ -77,7 +88,7 @@ namespace teachedIndicator
                     double[] workGadients = new double[Size];
                     for (int workNeyronNum = 0; workNeyronNum < Size; workNeyronNum++)
                     {
-                        double sumMistake = 0, gradient;
+                        double sumMistake = 0;
                         for (int L = 0; L < NumOfOutputs; L++)
                         {
                             sumMistake += oldOutLoyerWeights.Table[L][workNeyronNum] * outGadients[L];
@@ -92,11 +103,10 @@ namespace teachedIndicator
             Console.WriteLine(swatch.Elapsed);
         }
 
-
         public void Print()
         {
-            outLoyer.Print(5);
-            workLoyer.Print(5);
+            outLoyerCoeffs = outLoyer.Print(5, "ol.txt");
+            workLoyerCoeffs = workLoyer.Print(5, "wl.txt");
         }
 
     }

@@ -46,12 +46,14 @@ namespace teachedIndicator
                 neyronArray[outNeyronNum].CorrectCoeffs(amendments[outNeyronNum]);
             }
         }
-        public void Print(int round)
+        public Matrix Print(int round, string name)
         {
+            Matrix coeffs = new Matrix(Size, Inputs + 1);
             for (int neyronNum = 0; neyronNum < Size; neyronNum++)
             {
-                neyronArray[neyronNum].PrintCoeffs(round);
+                coeffs.Table[neyronNum] = neyronArray[neyronNum].PrintCoeffs(round, name);
             }
+            return coeffs;
         }
     }
 }

@@ -17,3 +17,6 @@ H:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\obj\Debug\t
 H:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\bin\Debug\teachedIndicator.exe.config
 H:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\bin\Debug\teachedIndicator.exe
 H:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\bin\Debug\teachedIndicator.pdb
+I:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\bin\Debug\teachedIndicator.exe.config
+I:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\obj\Debug\teachedIndicator.exe
+I:\3 курс\SII\teachedIndicator\teachedIndicator\teachedIndicator\obj\Debug\teachedIndicator.pdb

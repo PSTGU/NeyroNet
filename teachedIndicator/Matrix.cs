@@ -24,7 +24,7 @@ namespace teachedIndicator
             for (int i = 0; i < Row; i++)
             {
                 Table[i] = new double[Column];
-            } 
+            }
         }
 
         public Matrix(string fileName)
@@ -34,10 +34,10 @@ namespace teachedIndicator
             using (var streamReader = new StreamReader(path, System.Text.Encoding.Default))
             {
                 string fileText = streamReader.ReadToEnd();
-                string[] lines = fileText.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = fileText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
                 Row = lines.Length;
-               
+
                 for (var i = 0; i < lines.Length; i++)
                 {
                     string[] numbers = lines[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -55,7 +55,7 @@ namespace teachedIndicator
 
                     for (int j = 0; j < numbers.Length; j++)
                     {
-                       if(!double.TryParse(numbers[j], out Table[i][j]))
+                        if (!double.TryParse(numbers[j], out Table[i][j]))
                             throw new ArgumentException();
                     }
                 }
@@ -80,6 +80,18 @@ namespace teachedIndicator
                 Table[r][xMatrix.Column] = yMatrix.Table[r][yColumn];
             }
         }
+        public Matrix(double[] arr)
+        {
+            Row = 1;
+            Column = arr.Length + 1;
+            Table = new double[Row][];
+            Table[0] = new double[Column];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Table[0][i] = arr[i];
+            }
+            Table[0][arr.Length] = -1;
+        }
 
         public void PrintMatrix()
         {
@@ -93,6 +105,52 @@ namespace teachedIndicator
                 Console.WriteLine();
             }
         }
+
+        //1x8 on 10x8
+        public Matrix MatrixMultuplyParallel(Matrix left)
+        {
+            if (left.Column != Column)
+            {
+                throw new ArgumentException("Uncorrect lenght of matrix");
+            }
+            Matrix result = new Matrix(left.Row, Row);
+            for (int i = 0, len = result.Row; i < len; i++)
+            {
+                result.Table[i] = new double[Row];
+            }
+            Parallel.For(0, Row, (i) =>
+            {
+                for (int j = 0; j < left.Row; j++)
+                {
+                    double summ = 0;
+                    for (int n = 0; n < left.Column; n++)
+                    {
+                        summ += left.Table[j][n] * Table[i][n];
+                    }
+                    result.Table[j][i] = summ;
+                }
+            });
+            return result;
+        }
+
     }
+
+    /* examples */
+    // vec to matrix
+    /*Matrix m = new Matrix();
+    double[] left_vec = new double[3] { 3, 2, 1 };
+    double[][] left = new double[1][] { left_vec }; //new double[3][] { new double[] { 3, 2, 1 }, new double[] { 1, 2, 3 }, new double[] { 1, 1, 1 } };
+    double[][] result = m.MatrixMultuplyParallel(left);
+    double[] res2 = result[0];*/
+    // matr to matr
+    /*Matrix m = new Matrix();
+    double[][] left = new double[3][] { new double[] { 3, 2, 1 }, new double[] { 1, 2, 3 }, new double[] { 1, 1, 1 } };
+    double[][] result = m.MatrixMultuplyParallel(left);*/
+
+    //Console.WriteLine(Show_dbg(result));
+
+
+
+
 }
 

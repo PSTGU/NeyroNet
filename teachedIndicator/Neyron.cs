@@ -71,18 +71,34 @@ namespace teachedIndicator
             Weights[Size] -= amendments;
         }
 
-        public void PrintCoeffs(int round)//Диагностика
+        public double[] PrintCoeffs(int round, string name)//Диагностика
         {
-            StreamWriter sw = new StreamWriter(@"Rez.csv", true, System.Text.Encoding.Default);
-            Console.Write("Koeffs for neyron: " + Num + " - ");
-            foreach (double w in Weights)
+            double[] output = new double[Size + 1];
+            bool bl = true;
+            if (Num == 0)
             {
-                Console.Write(Math.Round(w, round) + "  ");
-                sw.Write(Math.Round(w, round).ToString() + ";");
+                bl = false;
+            }
+            StreamWriter sw = new StreamWriter(@"Rez.csv", true, System.Text.Encoding.Default);
+            StreamWriter sw2 = new StreamWriter(name, bl, System.Text.Encoding.Default);
+            Console.Write("Coeffs for neyron: " + Num + " - ");
+            if (bl)
+            {
+                sw2.WriteLine();
+            }
+            for (int i = 0; i <= Size; i++)
+            //foreach (double w in Weights)
+            {
+                output[i] = Weights[i];
+                Console.Write(Math.Round(Weights[i], round) + "  ");
+                sw.Write(Math.Round(Weights[i], round).ToString() + ";");
+                sw2.Write(Math.Round(Weights[i], round).ToString() + " ");
             }
             sw.WriteLine();
             Console.WriteLine();        
-            sw.Close(); ///sdasdas
+            sw.Close();
+            sw2.Close();///sdasdas
+            return output;
         }
     }
 }
