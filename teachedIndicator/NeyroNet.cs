@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace teachedIndicator
 {
@@ -67,7 +69,7 @@ namespace teachedIndicator
         }
         public void Study(string examplesAddress, string correctAnswersAddress, double step, long iter)
         {
-            Matrix examples = new Matrix(16);
+            Matrix examples = new Matrix(10);
             //Matrix examples = new Matrix(examplesAddress);
             Matrix correctAnswers = new Matrix(correctAnswersAddress);
 
@@ -77,7 +79,7 @@ namespace teachedIndicator
             {
                 for (int j = 0; j < examples.Row; j++)
                 {
-                    QuickExe(examples.Table[j]);
+                    Exe(examples.Table[j]);
                     double[] outGadients = new double[NumOfOutputs];
                     Matrix oldOutLoyerWeights = new Matrix(NumOfOutputs, Size);
                    
@@ -111,5 +113,64 @@ namespace teachedIndicator
             workLoyerCoeffs = workLoyer.Print(5, "wl.txt");
         }
 
+        public void Work()
+        {
+            //string[] question = new string[7];
+            //double[] vect = new double[7];
+            //while (true)
+            //{
+            //    Console.WriteLine("Input vector:");
+            //    question = Console.ReadLine().Split(' ');
+            //    int i = 0;
+            //    foreach (string ch in question)
+            //    {
+            //        vect[i] = Double.Parse(question[i]);
+            //        i++;
+            //    }
+            //    double[] ans = new double[4];
+            //    ans = QuickExe(vect);
+            //    foreach (double d in ans)
+            //    {
+            //        Console.Write(Math.Round(d, 1));
+            //        Console.Write(" ");
+            //    }
+            //}
+            while (true)
+            {
+                var dialog = new OpenFileDialog();
+                dialog.ShowDialog();
+                Bitmap image1 = null;
+                try
+                {
+                    image1 = new Bitmap(dialog.FileName, true);
+                }
+                catch (ArgumentException)
+                {
+                    Environment.Exit(1);
+                }
+                double[] vec = new double[image1.Width * image1.Height];
+                for (int x = 0; x < image1.Width; x++)
+                {
+                    for (int y = 0; y < image1.Height; y++)
+                    {
+                        Color from = image1.GetPixel(x, y);
+                        if (Math.Max(from.G, Math.Max(from.B, from.R)) < 124)
+                            vec[x * image1.Height + y] = 1;
+                        else
+                            vec[x * image1.Height + y] = 0;
+                    }
+                }
+                double[] ans = new double[4];
+                ans = QuickExe(vec);
+                Console.Write(dialog.FileName.Split('\\').Last() + " ");
+                foreach (double d in ans)
+                {
+                    Console.Write(Math.Round(d, 1));
+                    Console.Write(" ");
+                }
+                Console.Write("\n");
+
+            }
+        }
     }
 }

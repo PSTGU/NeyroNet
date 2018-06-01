@@ -36,7 +36,7 @@ namespace teachedIndicator
         public Matrix(string fileName)
         {
             bool isFirst = true;
-            var path = $"{Environment.CurrentDirectory}\\{fileName}";
+            string path = $"{Environment.CurrentDirectory}\\{fileName}";
             using (var streamReader = new StreamReader(path, System.Text.Encoding.Default))
             {
                 string fileText = streamReader.ReadToEnd();
@@ -103,7 +103,15 @@ namespace teachedIndicator
         {
             var dialog = new FolderBrowserDialog();
             dialog.ShowDialog();
-            var files = Directory.GetFiles(dialog.SelectedPath);
+            string[] files = null;
+            try
+            {
+                files = Directory.GetFiles(dialog.SelectedPath);
+            }
+            catch (ArgumentException)
+            {
+                Environment.Exit(1);
+            } 
             bool isfirst = true;
             int count = 0;
             foreach (var f in files)
