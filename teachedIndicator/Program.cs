@@ -9,10 +9,11 @@ namespace teachedIndicator
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
-            var TheNet = new NeyroNet(7, 4, 1);
-            TheNet.Study("x.txt", "y.txt", 0.5, 100000);
+            var TheNet = new NeyroNet(3500, 4, 10);
+            TheNet.Study("x.txt", "y.txt", 0.5, 5000);
             TheNet.Print();
             Console.ReadKey();
             string[] question = new string[7];
@@ -34,7 +35,7 @@ namespace teachedIndicator
                     Console.Write(Math.Round(d, 1));
                 }
             }
-            // dsadsa
+            
         }
     }
 }

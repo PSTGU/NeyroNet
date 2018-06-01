@@ -7,6 +7,12 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Drawing;
+
+using System.Windows;
+//using System.Windows.Controls;
+using System.Windows.Forms;
+
 
 namespace teachedIndicator
 {
@@ -91,6 +97,40 @@ namespace teachedIndicator
                 Table[0][i] = arr[i];
             }
             Table[0][arr.Length] = -1;
+        }
+
+        public Matrix(int size)
+        {
+            var dialog = new FolderBrowserDialog();
+            dialog.ShowDialog();
+            var files = Directory.GetFiles(dialog.SelectedPath);
+            bool isfirst = true;
+            int count = 0;
+            foreach (var f in files)
+            {
+                Bitmap image1 = new Bitmap(f, true);
+                double[] vec = new double[image1.Width * image1.Height];
+                if (isfirst)
+                {
+                    Row = size;
+                    Column = image1.Width * image1.Height;
+                    Table = new double[Row][];
+                    isfirst = false;
+                }
+                for (int x = 0; x < image1.Width; x++)
+                {
+                    for (int y = 0; y < image1.Height; y++)
+                    {
+                        Color from = image1.GetPixel(x, y);
+                        if (Math.Max(from.G, Math.Max(from.B, from.R)) < 124)
+                            vec[x * image1.Height + y] = 1;
+                        else
+                            vec[x * image1.Height + y] = 0;
+                    }
+                }
+                Table[count] = vec;
+                count++;
+            }
         }
 
         public void PrintMatrix()

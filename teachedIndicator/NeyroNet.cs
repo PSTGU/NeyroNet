@@ -67,15 +67,17 @@ namespace teachedIndicator
         }
         public void Study(string examplesAddress, string correctAnswersAddress, double step, long iter)
         {
-            Matrix examples = new Matrix(examplesAddress);
+            Matrix examples = new Matrix(16);
+            //Matrix examples = new Matrix(examplesAddress);
             Matrix correctAnswers = new Matrix(correctAnswersAddress);
+
             System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch(); // создаем объект
             swatch.Start(); // старт
             for (long i = 0; i < iter; i++)
             {
                 for (int j = 0; j < examples.Row; j++)
                 {
-                    Exe(examples.Table[j]);
+                    QuickExe(examples.Table[j]);
                     double[] outGadients = new double[NumOfOutputs];
                     Matrix oldOutLoyerWeights = new Matrix(NumOfOutputs, Size);
                    
